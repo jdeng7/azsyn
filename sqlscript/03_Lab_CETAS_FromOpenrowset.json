@@ -1,0 +1,17 @@
+{
+	"name": "03_Lab_CETAS_FromOpenrowset",
+	"properties": {
+		"content": {
+			"query": "/*\n\tThe external resources of your DataSource and File_Format were created in the previous lab and do not need to be\n\tcreated again. Most of the time you will leverage already created objects in your database \n\trather than recreating them.\n\n\tYou will see where to find these resources later in this lab.\n*/\n\nCREATE EXTERNAL TABLE serverless.dbo.HolidayDataExt_yjd\n   WITH(\n       LOCATION = 'training/training_output/HolidaysByCountry_yjd', -- Folder to load the data to.\n     DATA_SOURCE = [ADLSRoot_yjd],\n     FILE_FORMAT = [Parquet_yjd]\n    )\n    AS \n       SELECT\n            CountryOrRegion,\n            COUNT(*) AS TotalHolidayCount\n        FROM\n            OPENROWSET(\n                BULK 'https://azstoragepwyjd.dfs.core.windows.net/training/training_data/Holiday.snappy.parquet',\n                FORMAT='PARQUET'\n            ) AS [result]\n        GROUP BY CountryOrRegion\n        ORDER BY TotalHolidayCount DESC\n        GO\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

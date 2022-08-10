@@ -1,0 +1,17 @@
+{
+	"name": "az_sql_AdventureWorksLT_InternetSales",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "az_sql_AdventureWorksLT",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "InternetSales"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

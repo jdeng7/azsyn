@@ -1,0 +1,20 @@
+{
+	"name": "az_sqlpool_InternetSales",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "az-synapse-bootcamp-yjd-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "DedicatedP1"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "InternetSales"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

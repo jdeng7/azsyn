@@ -1,0 +1,87 @@
+{
+	"name": "Lab07B_ParentPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "\nSELECT \n\tTABLE_SCHEMA as TableSchema,\n\tTABLE_NAME as TableName\nFROM INFORMATION_SCHEMA.TABLES\nWHERE\n\tTABLE_NAME IN (\n\t\t'DimProduct',\n\t\t'DimProductCategory',\n\t\t'DimCustomer',\n\t\t'DimPromotion',\n\t\t'DimEmployee',\n\t\t'DimReseller',\n\t\t'DimSalesReason',\n\t\t'DimOrganization')",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "az_sql_AdventureWorksDW_Dynamic",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "ph",
+							"tablename": "ph"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup1').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Execute Pipeline1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Lab07A_WorkerPipeline",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"schema": {
+										"value": "@item().TableSchema",
+										"type": "Expression"
+									},
+									"tablename": {
+										"value": "@item().TableName",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "ClassLabs"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-08-09T22:55:43Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}
