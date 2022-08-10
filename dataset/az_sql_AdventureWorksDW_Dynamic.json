@@ -1,0 +1,33 @@
+{
+	"name": "az_sql_AdventureWorksDW_Dynamic",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "az_sql_AdventureWorksDW",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"schema": {
+				"type": "string",
+				"defaultValue": "ph"
+			},
+			"tablename": {
+				"type": "string",
+				"defaultValue": "ph"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().tablename",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

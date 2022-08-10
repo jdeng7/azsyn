@@ -1,0 +1,41 @@
+{
+	"name": "az_adls_azstoragepwyjd_ProductList",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "az_adls_azstoragepwyjd",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"directory": {
+				"type": "string",
+				"defaultValue": "ph"
+			},
+			"filename": {
+				"type": "string",
+				"defaultValue": "ph"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(\n\ndataset().filename,\n\n'List_',\n\nsubstring( convertFromUtc(utcNow(), 'Eastern Standard Time'),0,10),\n\n'.csv'\n\n)",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@concat('training_output/',dataset().directory)",
+					"type": "Expression"
+				},
+				"fileSystem": "training"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,20 @@
+{
+	"name": "az_sqlpool_DedicatedP1_SalesByProductYJD",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "az-synapse-bootcamp-yjd-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "DedicatedP1"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "SalesByProductYJD"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

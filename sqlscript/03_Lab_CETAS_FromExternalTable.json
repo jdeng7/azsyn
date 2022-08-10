@@ -1,0 +1,17 @@
+{
+	"name": "03_Lab_CETAS_FromExternalTable",
+	"properties": {
+		"content": {
+			"query": "CREATE EXTERNAL FILE FORMAT [Parquet_yjd] \n    WITH ( FORMAT_TYPE = PARQUET)\nGO\n \nCREATE EXTERNAL DATA SOURCE [ADLSRoot_yjd] \n    WITH (\n        LOCATION   = 'https://azstoragepwyjd.dfs.core.windows.net/'\n    )\nGO\n \nCREATE EXTERNAL TABLE serverless.dbo.HolidayDataExtyjd\n   WITH(\n       LOCATION = 'training/training_output/HolidayDatayjd',\n     DATA_SOURCE = [ADLSRoot_yjd],\n     FILE_FORMAT = [Parquet_yjd]\n    )\n    AS \n       SELECT \n            * \n       FROM \n            serverless.dbo.HolidayDatayjd\n \n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "serverless",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
