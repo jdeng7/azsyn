@@ -1,0 +1,20 @@
+{
+	"name": "Lab03B2",
+	"properties": {
+		"folder": {
+			"name": "LabSQL"
+		},
+		"content": {
+			"query": "SELECT\n    countryOrRegion AS Country, holidayName AS Holiday, date\nFROM\n    OPENROWSET(\n        BULK 'https://azstoragepwyjd.dfs.core.windows.net/training/training_data/Holiday.snappy.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [result]\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
