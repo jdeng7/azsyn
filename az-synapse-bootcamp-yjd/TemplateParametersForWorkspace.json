@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "az-synapse-bootcamp-yjd"
+		},
+		"az-synapse-bootcamp-yjd-WorkspaceDefaultSqlServer_connectionString": {
+			"value": ""
+		},
+		"az_adls_azstoragepwyjd_accountKey": {
+			"value": ""
+		},
+		"az_sql_AdventureWorksDW_connectionString": {
+			"value": ""
+		},
+		"az_sql_AdventureWorksLT_connectionString": {
+			"value": ""
+		},
+		"az-synapse-bootcamp-yjd-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://azstoragepwyjd.dfs.core.windows.net"
+		},
+		"az_adls_azstoragepwyjd_properties_typeProperties_url": {
+			"value": "https://azstoragepwyjd.dfs.core.windows.net/"
+		}
+	}
+}
