@@ -1,0 +1,17 @@
+{
+	"name": "dnaImportSetup",
+	"properties": {
+		"content": {
+			"query": "-- drop table azconfig\n-- create table azconfig (code varchar(10), active char(1), directory varchar(100), schemaName varchar(25), tableName varchar(50), stg_tableName varchar(50));\n\n-- Insert azconfig (code, active, directory, schemaName, tableName, stg_tableName)\n-- values ('FCDH','0','FIDELIS/dataFiles/DentalHeader','dbo','FidelisRendrDentalHeader','stg_FidelisRendrDentalHeader')\n-- ,('FCDL','0','FIDELIS/dataFiles/DentalLine','dbo','FidelisRendrDentalLine','stg_FidelisRendrDentalLine')\n-- ,('FCIPH','0','FIDELIS/dataFiles/IPClaimHeader','dbo','FidelisRendrIPClaimHeader','stg_FidelisRendrIPClaimHeader')\n-- ,('FCIPL','0','FIDELIS/dataFiles/IPClaimLine','dbo','FidelisRendrIPClaimLine','stg_FidelisRendrIPClaimLine')\n-- ,('FCMEMPCP','1','FIDELIS/dataFiles/MemberPCP','dbo','FidelisRendrMemberPCP','stg_FidelisRendrMemberPCP')\n\n-- select * from azconfig\n\n-- create table azlog (id int identity(1,1), loadedFile varchar(150), LoadedOn datetime)\n-- insert azlog (loadedFile, LoadedOn)\n-- select distinct filePath, getdate() from stg_FidelisRendrIPClaimLine\n\nselect * from azlog\n\nselect name from sys.tables\n\nselect count(*) , filePath from stg_FidelisRendrIPClaimLine group by filePath\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

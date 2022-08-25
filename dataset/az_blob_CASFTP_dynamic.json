@@ -1,0 +1,38 @@
+{
+	"name": "az_blob_CASFTP_dynamic",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CareAbout SFTP",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container": {
+				"type": "string",
+				"defaultValue": "ph"
+			},
+			"directory": {
+				"type": "string",
+				"defaultValue": "ph"
+			},
+			"fileName": {
+				"type": "string",
+				"defaultValue": "ph"
+			}
+		},
+		"folder": {
+			"name": "James/dynamic"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

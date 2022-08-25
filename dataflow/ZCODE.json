@@ -1,0 +1,338 @@
+{
+	"name": "ZCODE",
+	"properties": {
+		"folder": {
+			"name": "James"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "az_IP",
+						"type": "DatasetReference"
+					},
+					"name": "IP"
+				},
+				{
+					"dataset": {
+						"referenceName": "az_OP",
+						"type": "DatasetReference"
+					},
+					"name": "OP"
+				},
+				{
+					"dataset": {
+						"referenceName": "az_PROF",
+						"type": "DatasetReference"
+					},
+					"name": "PROF"
+				},
+				{
+					"dataset": {
+						"referenceName": "az_MEM",
+						"type": "DatasetReference"
+					},
+					"name": "MEM"
+				},
+				{
+					"dataset": {
+						"referenceName": "az_ZFILTER",
+						"type": "DatasetReference"
+					},
+					"name": "ZFILTER"
+				},
+				{
+					"dataset": {
+						"referenceName": "az_ZCODECAT",
+						"type": "DatasetReference"
+					},
+					"name": "ZCODECAT"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "az_SINK",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "az_ZROWC",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "az_ZROWC",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				},
+				{
+					"dataset": {
+						"referenceName": "az_ZROWC",
+						"type": "DatasetReference"
+					},
+					"name": "sink4"
+				},
+				{
+					"dataset": {
+						"referenceName": "az_ZROWC",
+						"type": "DatasetReference"
+					},
+					"name": "sink5"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "union1"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "union2"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "derivedColumn4"
+				},
+				{
+					"name": "join2"
+				},
+				{
+					"name": "join3"
+				},
+				{
+					"name": "derivedColumn5"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "RC2"
+				},
+				{
+					"name": "RC3"
+				},
+				{
+					"name": "RC4"
+				},
+				{
+					"name": "RC1"
+				},
+				{
+					"name": "derivedColumn6"
+				},
+				{
+					"name": "derivedColumn7"
+				},
+				{
+					"name": "derivedColumn8"
+				},
+				{
+					"name": "derivedColumn9"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          claim_id as string,",
+				"          member_id as string,",
+				"          Year as string,",
+				"          DxCode as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> IP",
+				"source(output(",
+				"          claim_id as string,",
+				"          member_id as string,",
+				"          Year as string,",
+				"          DxCode as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> OP",
+				"source(output(",
+				"          claim_id as string,",
+				"          member_id as string,",
+				"          Year as string,",
+				"          DxCode as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> PROF",
+				"source(output(",
+				"          member_id as string,",
+				"          Medicaid_Id as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> MEM",
+				"source(output(",
+				"          code as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ZFILTER",
+				"source(output(",
+				"          ZCode as string,",
+				"          SDOHCategory as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ZCODECAT",
+				"IP derive(source = \"IP\") ~> derivedColumn1",
+				"OP derive(source = \"OP\") ~> derivedColumn2",
+				"derivedColumn1, derivedColumn3 union(byName: true)~> union1",
+				"PROF derive(source = \"PROF\") ~> derivedColumn3",
+				"union1, derivedColumn2 union(byName: true)~> union2",
+				"union2, MEM join(union2@member_id == MEM@member_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 derive(left4 = left(DxCode,4)) ~> derivedColumn4",
+				"derivedColumn4, ZFILTER join(left4 == code,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"derivedColumn5, ZCODECAT join(left3 == ZCode,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join3",
+				"join2 derive(left3 = left(left4,3)) ~> derivedColumn5",
+				"join3 select(mapColumn(",
+				"          Medicaid_Id,",
+				"          claim_id,",
+				"          Year,",
+				"          DxCode,",
+				"          code,",
+				"          SDOHCategory,",
+				"          claim_type = source",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"join1 aggregate(RowCont = count()) ~> RC2",
+				"join2 aggregate(RowCont = count()) ~> RC3",
+				"join3 aggregate(RowCont = count()) ~> RC4",
+				"union2 aggregate(RowCont = count()) ~> RC1",
+				"RC1 derive(Name = \"RC1\") ~> derivedColumn6",
+				"RC2 derive(Name = \"RC2\") ~> derivedColumn7",
+				"RC3 derive(Name = \"RC3\") ~> derivedColumn8",
+				"RC4 derive(Name = \"RC4\") ~> derivedColumn9",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Medicaid_Id,",
+				"          claim_id,",
+				"          claim_type,",
+				"          Year,",
+				"          DxCode,",
+				"          code,",
+				"          SDOHCategory",
+				"     )) ~> sink1",
+				"derivedColumn6 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Name as string,",
+				"          ROWCONT as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Name,",
+				"          ROWCONT = RowCont",
+				"     )) ~> sink2",
+				"derivedColumn7 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Name as string,",
+				"          ROWCONT as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Name,",
+				"          ROWCONT = RowCont",
+				"     )) ~> sink3",
+				"derivedColumn8 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Name as string,",
+				"          ROWCONT as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Name,",
+				"          ROWCONT = RowCont",
+				"     )) ~> sink4",
+				"derivedColumn9 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Name as string,",
+				"          ROWCONT as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Name,",
+				"          ROWCONT = RowCont",
+				"     )) ~> sink5"
+			]
+		}
+	}
+}

@@ -1,0 +1,30 @@
+{
+	"name": "az_ZROWC",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "az_sql_cpazuredb_dnadata",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "James/zcode"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "ROWCONT",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "ZROWC"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,205 @@
+{
+	"name": "dnaImport2",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.fileArray",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Lookup1",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "select sum(case when loadedFile = '@{item().name}' then 1 else 0 end) as test \nfrom azlog\n",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "az_sql_dnadata_db",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Lookup1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(activity('Lookup1').output.firstRow.test , 0)",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Copy data1_copy1",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "DelimitedTextSource",
+												"additionalColumns": [
+													{
+														"name": "filePath",
+														"value": "$$FILEPATH"
+													}
+												],
+												"storeSettings": {
+													"type": "AzureBlobStorageReadSettings",
+													"recursive": true,
+													"enablePartitionDiscovery": false
+												},
+												"formatSettings": {
+													"type": "DelimitedTextReadSettings"
+												}
+											},
+											"sink": {
+												"type": "AzureSqlSink",
+												"writeBehavior": "insert",
+												"sqlWriterUseTableLock": false,
+												"tableOption": "autoCreate",
+												"disableMetricsCollection": false
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "az_blob_dataFile_dynamic",
+												"type": "DatasetReference",
+												"parameters": {
+													"directory": {
+														"value": "@pipeline().parameters.src_directory",
+														"type": "Expression"
+													},
+													"fileName": {
+														"value": "@item().name",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "az_sql_dnadata_dynamic",
+												"type": "DatasetReference",
+												"parameters": {
+													"schema": {
+														"value": "@pipeline().parameters.dest_schemaName",
+														"type": "Expression"
+													},
+													"tableName": {
+														"value": "@pipeline().parameters.dest_tableName",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"name": "Script1",
+										"type": "Script",
+										"dependsOn": [
+											{
+												"activity": "Copy data1_copy1",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"linkedServiceName": {
+											"referenceName": "az_sql_cpazuredb_dnadata",
+											"type": "LinkedServiceReference"
+										},
+										"typeProperties": {
+											"scripts": [
+												{
+													"type": "Query",
+													"text": {
+														"value": "insert azlog (loadedFile, LoadedOn)\nselect '@{item().name}',getdate()",
+														"type": "Expression"
+													}
+												}
+											]
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"fileArray": {
+				"type": "array"
+			},
+			"src_directory": {
+				"type": "string"
+			},
+			"dest_schemaName": {
+				"type": "string"
+			},
+			"dest_tableName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "James/tools/dnsImportFromFolder"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-08-14T02:26:03Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

@@ -1,0 +1,25 @@
+{
+	"name": "az_ZFILTER",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "az_sql_cpazuredb_dnadata",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "James/zcode"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "code",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "ZFILTER"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

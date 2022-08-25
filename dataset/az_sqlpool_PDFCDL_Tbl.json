@@ -1,0 +1,113 @@
+{
+	"name": "az_sqlpool_PDFCDL_Tbl",
+	"properties": {
+		"folder": {
+			"name": "James/Zarchive"
+		},
+		"annotations": [],
+		"type": "SqlPoolTable",
+		"schema": [
+			{
+				"name": "FileName",
+				"type": "varchar"
+			},
+			{
+				"name": "claim_id",
+				"type": "varchar"
+			},
+			{
+				"name": "claim_line",
+				"type": "varchar"
+			},
+			{
+				"name": "service_from_date",
+				"type": "varchar"
+			},
+			{
+				"name": "service_to_date",
+				"type": "varchar"
+			},
+			{
+				"name": "place_of_service",
+				"type": "varchar"
+			},
+			{
+				"name": "emergency_indicator",
+				"type": "varchar"
+			},
+			{
+				"name": "procedure_code",
+				"type": "varchar"
+			},
+			{
+				"name": "modifier_1",
+				"type": "varchar"
+			},
+			{
+				"name": "modifier_2",
+				"type": "varchar"
+			},
+			{
+				"name": "modifier_3",
+				"type": "varchar"
+			},
+			{
+				"name": "modifier_4",
+				"type": "varchar"
+			},
+			{
+				"name": "diagnosis_code_pointer",
+				"type": "varchar"
+			},
+			{
+				"name": "line_charge",
+				"type": "varchar"
+			},
+			{
+				"name": "billed_units",
+				"type": "varchar"
+			},
+			{
+				"name": "id_qualifier",
+				"type": "varchar"
+			},
+			{
+				"name": "provider_id",
+				"type": "varchar"
+			},
+			{
+				"name": "plan_paid",
+				"type": "varchar"
+			},
+			{
+				"name": "member_liability",
+				"type": "varchar"
+			},
+			{
+				"name": "allowed_amount",
+				"type": "varchar"
+			},
+			{
+				"name": "covered_units",
+				"type": "varchar"
+			},
+			{
+				"name": "member_responsibility",
+				"type": "varchar"
+			},
+			{
+				"name": "capitation_indicator",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "PAYOR_DATA",
+			"table": "FidelisCare_DentalLine_stg"
+		},
+		"sqlPool": {
+			"referenceName": "cpsqlpool",
+			"type": "SqlPoolReference"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

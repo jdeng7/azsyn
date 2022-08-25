@@ -1,0 +1,34 @@
+{
+	"name": "PDFC_DentalHeaderData1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CareAbout SFTP",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "James/Zarchive"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "FidelisCare_Prod_DentalHeader_FULL_RENDRCARE_20190101_20220630.txt",
+				"folderPath": "fidelis/FromCentene",
+				"container": "rendrcaresftp"
+			},
+			"columnDelimiter": "|",
+			"rowDelimiter": "\n",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "claim_id|billing_provider_id|rendering_provider_id|first_date_of_service|last_date_of_service|member_id|patient_dob|patient_gender|patient_zip_code|line_of_business|product|blue_card_identifier|total_charge|allowed_amount|member_responsibility|plan_paid|icd_version|diagnosis_1|diagnosis_2|diagnosis_3|diagnosis_4|diagnosis_5|diagnosis_6|diagnosis_7|diagnosis_8|diagnosis_9|diagnosis_10|diagnosis_11|payment_methodology|source_system|primary_payer|adjustment_claim_indicator|adjusted_claim_id|employer_id|paid_date|posted_date|claim_status|denial_reason|member_pcp_id|member_pcp_id_npi",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

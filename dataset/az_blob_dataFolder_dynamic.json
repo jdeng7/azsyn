@@ -1,0 +1,35 @@
+{
+	"name": "az_blob_dataFolder_dynamic",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CareAbout SFTP",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"directory": {
+				"type": "string",
+				"defaultValue": "ph"
+			}
+		},
+		"folder": {
+			"name": "James/azImportFromFolder"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@dataset().directory",
+					"type": "Expression"
+				},
+				"container": "data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,29 @@
+{
+	"name": "az_ZCODECAT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "az_sql_cpazuredb_dnadata",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "James/zcode"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ZCode",
+				"type": "varchar"
+			},
+			{
+				"name": "SDOHCategory",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "ZCODECAT"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
