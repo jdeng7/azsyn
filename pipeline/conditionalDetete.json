@@ -1,0 +1,87 @@
+{
+	"name": "conditionalDetete",
+	"properties": {
+		"activities": [
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@pipeline().parameters.deleteSource",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Delete1",
+							"type": "Delete",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "BinaryDataSource_File",
+									"type": "DatasetReference",
+									"parameters": {
+										"Container": {
+											"value": "@pipeline().parameters.src_container",
+											"type": "Expression"
+										},
+										"Directory": {
+											"value": "@pipeline().parameters.src_directory",
+											"type": "Expression"
+										},
+										"filename": {
+											"value": "@pipeline().parameters.fileName",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "CareAbout SFTP",
+										"type": "LinkedServiceReference"
+									},
+									"path": "data/logs"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"deleteSource": {
+				"type": "bool"
+			},
+			"src_container": {
+				"type": "string"
+			},
+			"src_directory": {
+				"type": "string"
+			},
+			"fileName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "James/tools/moveFiles"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-08-21T03:27:20Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

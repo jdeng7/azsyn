@@ -1,0 +1,33 @@
+{
+	"name": "PDFC_DentalLineData1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CareAbout SFTP",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "James/Zarchive"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "FidelisCare_Prod_DentalLine_FULL_RENDRCARE_20190101_20220630.txt",
+				"folderPath": "fidelis/FromCentene",
+				"container": "rendrcaresftp"
+			},
+			"columnDelimiter": "|",
+			"rowDelimiter": "\n",
+			"escapeChar": "\"",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

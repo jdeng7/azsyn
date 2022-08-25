@@ -1,0 +1,203 @@
+{
+	"name": "Dataflow1",
+	"properties": {
+		"folder": {
+			"name": "James"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ASA_PD_FC_DentalHeader_Tbl",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ASA_PD_FC_DemtalLine_Tbl",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "PipelineDataflowDemo",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "PipelineDemo2",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          FileName as string,",
+				"          claim_id as string,",
+				"          billing_provider_id as string,",
+				"          rendering_provider_id as string,",
+				"          first_date_of_service as string,",
+				"          last_date_of_service as string,",
+				"          member_id as string,",
+				"          patient_dob as string,",
+				"          patient_gender as string,",
+				"          patient_zip_code as string,",
+				"          line_of_business as string,",
+				"          product as string,",
+				"          blue_card_identifier as string,",
+				"          total_charge as string,",
+				"          allowed_amount as string,",
+				"          member_responsibility as string,",
+				"          plan_paid as string,",
+				"          icd_version as string,",
+				"          diagnosis_1 as string,",
+				"          diagnosis_2 as string,",
+				"          diagnosis_3 as string,",
+				"          diagnosis_4 as string,",
+				"          diagnosis_5 as string,",
+				"          diagnosis_6 as string,",
+				"          diagnosis_7 as string,",
+				"          diagnosis_8 as string,",
+				"          diagnosis_9 as string,",
+				"          diagnosis_10 as string,",
+				"          diagnosis_11 as string,",
+				"          payment_methodology as string,",
+				"          source_system as string,",
+				"          primary_payer as string,",
+				"          adjustment_claim_indicator as string,",
+				"          adjusted_claim_id as string,",
+				"          employer_id as string,",
+				"          paid_date as string,",
+				"          posted_date as string,",
+				"          claim_status as string,",
+				"          denial_reason as string,",
+				"          member_pcp_id as string,",
+				"          member_pcp_id_npi as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table',",
+				"     staged: true) ~> source1",
+				"source(output(",
+				"          FileName as string,",
+				"          claim_id as string,",
+				"          claim_line as string,",
+				"          service_from_date as string,",
+				"          service_to_date as string,",
+				"          place_of_service as string,",
+				"          emergency_indicator as string,",
+				"          procedure_code as string,",
+				"          modifier_1 as string,",
+				"          modifier_2 as string,",
+				"          modifier_3 as string,",
+				"          modifier_4 as string,",
+				"          diagnosis_code_pointer as string,",
+				"          line_charge as string,",
+				"          billed_units as string,",
+				"          id_qualifier as string,",
+				"          provider_id as string,",
+				"          plan_paid as string,",
+				"          member_liability as string,",
+				"          allowed_amount as string,",
+				"          covered_units as string,",
+				"          member_responsibility as string,",
+				"          capitation_indicator as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table',",
+				"     staged: true) ~> source2",
+				"source1, source2 join(source1@claim_id == source2@claim_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"filter1 select(mapColumn(",
+				"          each(match(true()))",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 derive(Description = concat(\r",
+				"    'Member, ',\r",
+				"    claim_id,\r",
+				"    ', visited ',\r",
+				"    place_of_service,\r",
+				"    ' on ',\r",
+				"    first_date_of_service\r",
+				")) ~> derivedColumn1",
+				"derivedColumn1 aggregate(groupBy(claim_id),",
+				"     CountLine = count()) ~> aggregate1",
+				"aggregate1 derive(LoadedBy = 'DF') ~> derivedColumn2",
+				"derivedColumn1 derive(LoadedBy = 'DF') ~> derivedColumn3",
+				"join1 filter(left(member_id,2) == '1') ~> filter1",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          claim_id as string,",
+				"          CountLine as integer,",
+				"          loadedBy as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"derivedColumn3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id as integer,",
+				"          Description as string,",
+				"          LoadedBy as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+			]
+		}
+	}
+}

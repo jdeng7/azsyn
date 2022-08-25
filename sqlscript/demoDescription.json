@@ -1,0 +1,17 @@
+{
+	"name": "demoDescription",
+	"properties": {
+		"content": {
+			"query": "select count(*) from [PAYOR_DATA].[FidelisCare_DentalLine_stg]\nselect count(*) from [PAYOR_DATA].[FidelisCare_DentalHeader_stg]\n\nselect count(distinct claim_id) from [PAYOR_DATA].[FidelisCare_DentalLine_stg]\nselect count(distinct claim_id) from [PAYOR_DATA].[FidelisCare_DentalHeader_stg]\n\nselect count(*), count(distinct l.claim_id)\nfrom [PAYOR_DATA].[FidelisCare_DentalLine_stg] l\njoin [PAYOR_DATA].[FidelisCare_DentalHeader_stg] h\non h.claim_id = l.claim_id\n\n\nselect count(*) from  DemoDescription \nselect count(*) from  DemoDescription2 \n\n\nselect top 1000 * from DemoDescription where LoadedBy <> 'SP'\n\n\n\n/*\n\ndrop table DemoDescription ;\ncreate table DemoDescription (claim_id varchar(50), CountLine int, loadedBy varchar(20))\ndrop table DemoDescription2 ;\ncreate table DemoDescription2 (id int identity(1,1), Description varchar(255), LoadedBy varchar(20))\n\n\n\nalter proc demoLoadTransform AS\nbegin\n\ninsert [DemoDescription] (claim_id, CountLine, LoadedBy)\nselect claim_id, CountCLM, 'SP' from (\nselect l.claim_id , count(*) as CountCLM\nfrom [PAYOR_DATA].[FidelisCare_DentalLine_stg] l\njoin [PAYOR_DATA].[FidelisCare_DentalHeader_stg] h\non h.claim_id = l.claim_id\ngroup by l.claim_id ) t\n\ninsert [DemoDescription2] (description, LoadedBy)\nselect 'Member, ' + h.[member_id] + ' visited ' + isnull(l.place_of_service,'pos') + ' on ' + l.service_from_date, 'SP'\nfrom [PAYOR_DATA].[FidelisCare_DentalLine_stg] l\njoin [PAYOR_DATA].[FidelisCare_DentalHeader_stg] h\non h.claim_id = l.claim_id\n\n\nend\n\n\n*/\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "cpsqlpool",
+				"poolName": "cpsqlpool"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

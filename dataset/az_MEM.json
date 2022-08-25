@@ -1,0 +1,29 @@
+{
+	"name": "az_MEM",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "az_sql_cpazuredb_dnadata",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "James/zcode"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "member_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Medicaid_Id",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "ZMEM"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

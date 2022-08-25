@@ -1,0 +1,36 @@
+{
+	"name": "az_sql_dnadataTbl_dynamic",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "az_sql_cpazuredb_dnadata",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"schema": {
+				"type": "string",
+				"defaultValue": "ph"
+			},
+			"tableName": {
+				"type": "string",
+				"defaultValue": "ph"
+			}
+		},
+		"folder": {
+			"name": "James/dynamic"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().tableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

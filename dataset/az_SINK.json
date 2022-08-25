@@ -1,0 +1,20 @@
+{
+	"name": "az_SINK",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "az_sql_cpazuredb_dnadata",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "James/zcode"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "ZSINK"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

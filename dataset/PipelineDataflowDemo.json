@@ -1,0 +1,37 @@
+{
+	"name": "PipelineDataflowDemo",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "cpsynapsews-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "cpsqlpool"
+			}
+		},
+		"folder": {
+			"name": "James/Zarchive"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "claim_id",
+				"type": "varchar"
+			},
+			{
+				"name": "CountLine",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "loadedBy",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "DemoDescription"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

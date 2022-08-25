@@ -1,0 +1,58 @@
+{
+	"name": "SqlServer1CCMPatient",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServer1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "James/testImportSqlServer"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "PatientID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ClinicID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "BillingStatus",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CreateDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "CCMStatus",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ModifyDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "ImportVersion",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "CCM_Patient"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
