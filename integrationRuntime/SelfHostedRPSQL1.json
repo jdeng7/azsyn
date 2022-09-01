@@ -1,0 +1,6 @@
+{
+	"name": "SelfHostedRPSQL1",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

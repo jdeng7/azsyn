@@ -4,10 +4,17 @@
 		"description": "Move files from one folder to another folder",
 		"activities": [
 			{
-				"name": "GetFileList",
+				"name": "GetSrcFileList",
 				"description": "Get the list of file",
 				"type": "GetMetadata",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "FilterDestFilesOnly",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -49,7 +56,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "FilterFiles",
+						"activity": "FilterSrcFilesOnly",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -58,92 +65,17 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('FilterFiles').output.value",
+						"value": "@activity('FilterSrcFilesOnly').output.value",
 						"type": "Expression"
 					},
 					"batchCount": 20,
 					"activities": [
 						{
-							"name": "CopyAFile",
-							"description": "Copy a file from the source store to the destination store.",
-							"type": "Copy",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "BinarySource",
-									"storeSettings": {
-										"type": "AzureBlobStorageReadSettings",
-										"recursive": true
-									},
-									"formatSettings": {
-										"type": "BinaryReadSettings"
-									},
-									"recursive": false
-								},
-								"sink": {
-									"type": "BinarySink",
-									"storeSettings": {
-										"type": "AzureBlobStorageWriteSettings"
-									}
-								},
-								"enableStaging": false,
-								"dataIntegrationUnits": 0
-							},
-							"inputs": [
-								{
-									"referenceName": "BinaryDataSource_File",
-									"type": "DatasetReference",
-									"parameters": {
-										"Container": {
-											"value": "@pipeline().parameters.SourceStore_Location",
-											"type": "Expression"
-										},
-										"Directory": {
-											"value": "@pipeline().parameters.SourceStore_Directory",
-											"type": "Expression"
-										},
-										"filename": {
-											"value": "@item().name",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "BinaryDataDestination",
-									"type": "DatasetReference",
-									"parameters": {
-										"Container": {
-											"value": "@pipeline().parameters.DestinationStore_Location",
-											"type": "Expression"
-										},
-										"Directory": {
-											"value": "@pipeline().parameters.DestinationStore_Directory",
-											"type": "Expression"
-										},
-										"filename": {
-											"value": "@item().name",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						},
-						{
-							"name": "If Condition1",
+							"name": "Delete If deleteSrc",
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "CopyAFile",
+									"activity": "Copy If File Not Exists",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -197,17 +129,126 @@
 									}
 								]
 							}
+						},
+						{
+							"name": "Set FileExists",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "FileExists",
+								"value": {
+									"value": "@contains(activity('FilterDestFilesOnly').output.value,item().name)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Copy If File Not Exists",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Set FileExists",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@variables('FileExists')",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "CopyAFile",
+										"description": "Copy a file from the source store to the destination store.",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "BinarySource",
+												"storeSettings": {
+													"type": "AzureBlobStorageReadSettings",
+													"recursive": true
+												},
+												"formatSettings": {
+													"type": "BinaryReadSettings"
+												},
+												"recursive": false
+											},
+											"sink": {
+												"type": "BinarySink",
+												"storeSettings": {
+													"type": "AzureBlobStorageWriteSettings"
+												}
+											},
+											"enableStaging": false,
+											"dataIntegrationUnits": 0
+										},
+										"inputs": [
+											{
+												"referenceName": "BinaryDataSource_File",
+												"type": "DatasetReference",
+												"parameters": {
+													"Container": {
+														"value": "@pipeline().parameters.SourceStore_Location",
+														"type": "Expression"
+													},
+													"Directory": {
+														"value": "@pipeline().parameters.SourceStore_Directory",
+														"type": "Expression"
+													},
+													"filename": {
+														"value": "@item().name",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "BinaryDataDestination",
+												"type": "DatasetReference",
+												"parameters": {
+													"Container": {
+														"value": "@pipeline().parameters.DestinationStore_Location",
+														"type": "Expression"
+													},
+													"Directory": {
+														"value": "@pipeline().parameters.DestinationStore_Directory",
+														"type": "Expression"
+													},
+													"filename": {
+														"value": "@item().name",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								]
+							}
 						}
 					]
 				}
 			},
 			{
-				"name": "FilterFiles",
+				"name": "FilterSrcFilesOnly",
 				"description": "Only files will be selected, the source-folders will not be selected.",
 				"type": "Filter",
 				"dependsOn": [
 					{
-						"activity": "GetFileList",
+						"activity": "GetSrcFileList",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -216,7 +257,71 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('GetFileList').output.childItems",
+						"value": "@activity('GetSrcFileList').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@equals(item().type, 'File')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "GetDestFileList",
+				"description": "Get the list of file",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "BinaryDataSource_Folder",
+						"type": "DatasetReference",
+						"parameters": {
+							"Container": {
+								"value": "@pipeline().parameters.SourceStore_Location",
+								"type": "Expression"
+							},
+							"Directory": {
+								"value": "@pipeline().parameters.SourceStore_Directory",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "FilterDestFilesOnly",
+				"description": "Only files will be selected, the source-folders will not be selected.",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "GetDestFileList",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GetDestFileList').output.childItems",
 						"type": "Expression"
 					},
 					"condition": {
@@ -248,11 +353,16 @@
 				"defaultValue": false
 			}
 		},
+		"variables": {
+			"FileExists": {
+				"type": "Boolean"
+			}
+		},
 		"folder": {
 			"name": "James/tools/moveFiles"
 		},
 		"annotations": [],
-		"lastPublishTime": "2022-08-21T03:27:16Z"
+		"lastPublishTime": "2022-08-31T12:43:37Z"
 	},
 	"type": "Microsoft.Synapse/workspaces/pipelines"
 }

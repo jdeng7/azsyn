@@ -1,0 +1,17 @@
+{
+	"name": "RPSQL1_TriboroCDR",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"description": "Rendrcare SQL Server database link",
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=False;data source=10.255.1.10;initial catalog=TriboroCDR;user id=careaboutdbuser",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJjYzNkOGJmMi02Zjc0LTRkNTAtYTZiMC1mYmQ0YTJjN2QyYjgiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "SelfHostedRPSQL1",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

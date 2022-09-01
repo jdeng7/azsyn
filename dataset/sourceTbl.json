@@ -1,0 +1,74 @@
+{
+	"name": "sourceTbl",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "az_sql_cpazuredb_dnadata",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "James/dna"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "table_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "column_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ordinal_position",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "IsKeyColumn",
+				"type": "varchar"
+			},
+			{
+				"name": "IsDateColumn",
+				"type": "varchar"
+			},
+			{
+				"name": "IsFinanceColumn",
+				"type": "varchar"
+			},
+			{
+				"name": "IsLOBColumn",
+				"type": "varchar"
+			},
+			{
+				"name": "IsAdditionalBusinessTypeColumn",
+				"type": "varchar"
+			},
+			{
+				"name": "IsPatientDemographic",
+				"type": "varchar"
+			},
+			{
+				"name": "IsDxColumn",
+				"type": "varchar"
+			},
+			{
+				"name": "IsProcedureCode",
+				"type": "varchar"
+			},
+			{
+				"name": "IsAdditionalServiceTypeColumn",
+				"type": "varchar"
+			},
+			{
+				"name": "IsAdditionalServiceStatusColumn",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "dnaDataAnalysis"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
