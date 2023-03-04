@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 3 explore vendor",
+	"properties": {
+		"content": {
+			"query": "USE nyc_taxi_discovery\n\nSELECT \n    *\n    FROM OPENROWSET(\n        BULK 'vendor_unquoted.csv',\n        DATA_SOURCE = 'nyc_taxi_raw',\n        FORMAT = 'csv',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = TRUE\n    ) AS vendor;\n\n\n\n    SELECT \n    *\n    FROM OPENROWSET(\n        BULK 'vendor_escaped.csv',\n        DATA_SOURCE = 'nyc_taxi_raw',\n        FORMAT = 'csv',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = TRUE,\n        ESCAPECHAR = '\\\\'\n    ) AS vendor_es;\n\n    SELECT \n    *\n    FROM OPENROWSET(\n        BULK 'vendor.csv',\n        DATA_SOURCE = 'nyc_taxi_raw',\n        FORMAT = 'csv',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = TRUE,\n        FIELDQUOTE = '\"'\n    ) AS vendor;\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "nyc_taxi_discovery",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
