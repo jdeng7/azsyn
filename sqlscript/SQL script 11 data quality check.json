@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 11 data quality check",
+	"properties": {
+		"content": {
+			"query": "USE nyc_taxi_discovery\n\n-- Identify any data quality issues in trip total amount \n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'trip_data_green_parquet/year=2020/month=01/',\n        FORMAT = 'PARQUET',\n        DATA_SOURCE = 'nyc_taxi_raw'\n    ) AS [result]\n\n\n-- Basic check\nSELECT\n    MIN(total_amount) AS min_total_amount,\n    MAX(total_amount) AS max_total_amount,\n    AVG(total_amount) AS avg_total_amount,\n    COUNT(1) AS total_number_of_record,\n    COUNT(total_amount) AS not_null_total_number_of_records\nFROM\n    OPENROWSET(\n        BULK 'trip_data_green_parquet/year=2020/month=01/',\n        FORMAT = 'PARQUET',\n        DATA_SOURCE = 'nyc_taxi_raw'\n    ) AS [result];\n-- min got -210.3 It's look strange! \n\n-- Let's investigate\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'trip_data_green_parquet/year=2020/month=01/',\n        FORMAT = 'PARQUET',\n        DATA_SOURCE = 'nyc_taxi_raw'\n    ) AS [result]\nWHERE total_amount < 0;\n\n-- It's show the Payment Type is 3 and 4 \n-- What is it? Let's find from payment_type file\nSELECT payment_type, description \n    FROM OPENROWSET(\n        BULK 'payment_type.json',\n        DATA_SOURCE = 'nyc_taxi_raw',\n        FORMAT = 'csv',\n        FIELDTERMINATOR = '0x0b', --vertical tab\n        FIELDQUOTE = '0x0b'\n    ) WITH(\n        jsonDoc NVARCHAR(MAX)\n    )AS payment_type\n    CROSS APPLY OPENJSON(jsonDoc)\n    WITH(\n        payment_type SMALLINT,\n        description VARCHAR(20) '$.payment_type_desc'\n    );\n-- payment type 3 means 'no charage' / 4 means 'dispute'(refund)\n\n-- Let's check for whole data in Month=1 to check how many payment_type\nSELECT\n    payment_type,\n    COUNT(1) AS number_of_records\nFROM\n    OPENROWSET(\n        BULK 'trip_data_green_parquet/year=2020/month=01/',\n        FORMAT = 'PARQUET',\n        DATA_SOURCE = 'nyc_taxi_raw'\n    ) AS [result]\nGROUP BY payment_type\nORDER BY payment_type",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
