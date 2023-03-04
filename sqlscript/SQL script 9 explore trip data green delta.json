@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 9 explore trip data green delta",
+	"properties": {
+		"content": {
+			"query": "USE nyc_taxi_discovery\n\n-- Delta file, the table shows partitioned column itself. \nSELECT TOP 100\n    *\n    FROM OPENROWSET(\n        BULK 'trip_data_green_delta/',  --point to main folder instead of file name\n        DATA_SOURCE = 'nyc_taxi_raw',\n        FORMAT = 'DELTA'\n    ) AS trip_data\n\n-- Get error will specify Subfolder \nSELECT TOP 100\n    *\n    FROM OPENROWSET(\n        BULK 'trip_data_green_delta/year=2020',  \n        DATA_SOURCE = 'nyc_taxi_raw',\n        FORMAT = 'DELTA'\n    ) AS trip_data\n\n-- Let check Data Type \nEXEC sp_describe_first_result_set N'\nSELECT TOP 100\n    *\n    FROM OPENROWSET(\n        BULK ''trip_data_green_delta/'',  \n        DATA_SOURCE = ''nyc_taxi_raw'',\n        FORMAT = ''DELTA''\n    ) AS trip_data'\n-- Its show incorrect data type in 3 columns: varchar(8000) - store_and_fwd_flag, year, month \n\n-- Change Data Type\nSELECT TOP 100\n    *\n    FROM OPENROWSET(\n        BULK 'trip_data_green_delta/',  \n        DATA_SOURCE = 'nyc_taxi_raw',\n        FORMAT = 'DELTA'\n    ) WITH(\n        VendorID INT,\n        lpep_pickup_datetime datetime2(7),\n        lpep_dropoff_datetime datetime2(7),\n        store_and_fwd_flag CHAR(1),\n        RatecodeID INT,\n        PULocationID INT,\n        DOLocationID INT,\n        passenger_count INT,\n        trip_distance FLOAT,\n        fare_amount FLOAT,\n        extra FLOAT,\n        mta_tax FLOAT,\n        tip_amount FLOAT,\n        tolls_amount FLOAT,\n        ehail_fee INT,\n        improvement_surcharge FLOAT,\n        total_amount FLOAT,\n        payment_type INT,\n        trip_type INT,\n        congestion_surcharge FLOAT,\n        year VARCHAR(4),\n        month VARCHAR(2)\n    ) AS trip_data;\n\n-- To select only some column \nSELECT TOP 100\n    *\n    FROM OPENROWSET(\n        BULK 'trip_data_green_delta/',  \n        DATA_SOURCE = 'nyc_taxi_raw',\n        FORMAT = 'DELTA'\n    ) WITH(\n        trip_distance FLOAT,\n        fare_amount FLOAT,\n        year VARCHAR(4),    -- need to specify year(that was generated column by delta), it will be error if not specify\n        month VARCHAR(2)    -- need to specify month(that was generated column by delta)\n    ) AS trip_data;\n\n-- Compare with WHERE clause and without WHERE -- data scanned usage is different! \nSELECT COUNT(DISTINCT(payment_type))\n    FROM OPENROWSET(\n        BULK 'trip_data_green_delta/',  \n        DATA_SOURCE = 'nyc_taxi_raw',\n        FORMAT = 'DELTA'\n    ) AS trip_data;\n\nSELECT COUNT(DISTINCT(payment_type))\n    FROM OPENROWSET(\n        BULK 'trip_data_green_delta/',  \n        DATA_SOURCE = 'nyc_taxi_raw',\n        FORMAT = 'DELTA'\n    ) AS trip_data\nWHERE year='2020' AND month='01';",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
