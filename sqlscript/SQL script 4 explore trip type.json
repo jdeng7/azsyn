@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 4 explore trip type",
+	"properties": {
+		"content": {
+			"query": "\nUSE nyc_taxi_discovery --database name\n\nSELECT *\n    FROM OPENROWSET(\n        BULK 'trip_type.tsv',\n        DATA_SOURCE = 'nyc_taxi_raw',\n        FORMAT = 'csv',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = TRUE,\n        FIELDTERMINATOR = '\\t'\n    ) AS trip_types",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "nyc_taxi_discovery",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
