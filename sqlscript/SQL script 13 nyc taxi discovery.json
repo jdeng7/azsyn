@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 13 nyc taxi discovery",
+	"properties": {
+		"content": {
+			"query": "USE nyc_taxi_discovery\n\n-- Number of trips made by duration in hours\n-- Step 1 - Look at Pickup_datetime and dropoff_datetime from trip_data \nSELECT \n    lpep_pickup_datetime,\n    lpep_dropoff_datetime\nFROM OPENROWSET(\n    BULK 'trip_data_green_parquet/year=2020/month=01/',\n    FORMAT = 'PARQUET',\n    DATA_SOURCE = 'nyc_taxi_raw'\n) AS trip_data\n\n-- Step 2 and use DATEDIFF function\nSELECT \n    lpep_pickup_datetime,\n    lpep_dropoff_datetime,\n    DATEDIFF(minute, lpep_pickup_datetime, lpep_dropoff_datetime) / 60 AS from_hour,\n    (DATEDIFF(minute, lpep_pickup_datetime, lpep_dropoff_datetime) / 60) + 1 AS to_hour\nFROM OPENROWSET(\n    BULK 'trip_data_green_parquet/year=2020/month=01/',\n    FORMAT = 'PARQUET',\n    DATA_SOURCE = 'nyc_taxi_raw'\n) AS trip_data\n\n-- Step 3 COUNT\nSELECT \n    DATEDIFF(minute, lpep_pickup_datetime, lpep_dropoff_datetime) / 60 AS from_hour,\n    (DATEDIFF(minute, lpep_pickup_datetime, lpep_dropoff_datetime) / 60) + 1 AS to_hour,\n    COUNT(1) AS number_of_trips\nFROM OPENROWSET(\n    BULK 'trip_data_green_parquet/year=2020/month=01/',\n    FORMAT = 'PARQUET',\n    DATA_SOURCE = 'nyc_taxi_raw'\n) AS trip_data\nGROUP BY DATEDIFF(minute, lpep_pickup_datetime, lpep_dropoff_datetime) / 60,\n    (DATEDIFF(minute, lpep_pickup_datetime, lpep_dropoff_datetime) / 60) + 1\nORDER BY from_hour, to_hour;",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
