@@ -1,0 +1,17 @@
+{
+	"name": "crt ex tbl taxizone wo header",
+	"properties": {
+		"content": {
+			"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseDelimitedTextFormat') \n\tCREATE EXTERNAL FILE FORMAT [CSV] \n\tWITH ( FORMAT_TYPE = DELIMITEDTEXT ,\n\t       FORMAT_OPTIONS (\n\t\t\t FIELD_TERMINATOR = ',',\n\t\t\t USE_TYPE_DEFAULT = FALSE\n\t\t\t))\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'week5_azstoragepwyjdyjd_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [week5_azstoragepwyjdyjd_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://week5@azstoragepwyjdyjd.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE dbo.taxizone_woHeader (\n\t[C1] bigint,\n\t[C2] nvarchar(4000),\n\t[C3] nvarchar(4000),\n\t[C4] nvarchar(4000)\n\t)\n\tWITH (\n\tLOCATION = 'raw/taxi_zone_without_header.csv',\n\tDATA_SOURCE = [week5_azstoragepwyjdyjd_dfs_core_windows_net],\n\tFILE_FORMAT = [CSV]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM dbo.taxizone_woHeader\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "nyc_taxi_discovery",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
