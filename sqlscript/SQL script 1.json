@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 1",
+	"properties": {
+		"content": {
+			"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'CSV2') \n\tCREATE EXTERNAL FILE FORMAT [CSV2] \n\tWITH ( FORMAT_TYPE = DELIMITEDTEXT ,\n\t       FORMAT_OPTIONS (\n\t\t\t   FIRST_ROW = 2,\n\t\t\t FIELD_TERMINATOR = ',',\n\t\t\t USE_TYPE_DEFAULT = FALSE\n\t\t\t))\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'week5_azstoragepwyjdyjd_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [week5_azstoragepwyjdyjd_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://week5@azstoragepwyjdyjd.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE dbo.taxizone_wHeader1 (\n\t[LOCATIONID] bigint,\n\t[BOROUGH] nvarchar(4000),\n\t[ZONE] nvarchar(4000),\n\t[SERVICE_ZONE] nvarchar(4000)\n\t)\n\tWITH (\n\tLOCATION = 'raw/taxi_zone.csv',\n\tDATA_SOURCE = [week5_azstoragepwyjdyjd_dfs_core_windows_net],\n\tFILE_FORMAT = [CSV1]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM dbo.taxizone_wHeader1\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
